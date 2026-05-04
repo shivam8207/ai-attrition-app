@@ -1,0 +1,7 @@
+Quart
+pandas==2.2.1
+numpy
+tensorflow
+uvicorn
+gunicorn
+
