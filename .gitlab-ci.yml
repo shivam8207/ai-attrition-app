@@ -1,0 +1,65 @@
+image: google/cloud-sdk:slim
+
+stages:
+  - build
+  - gitops
+
+variables:
+  PROJECT_ID: "devopsmar26"
+  REGION: "asia-south1"
+  REPO: "ai-attrition"
+  IMAGE_NAME: "ai-attrition"
+  REGISTRY: "asia-south1-docker.pkg.dev"
+  IMAGE_TAG: "$CI_COMMIT_SHORT_SHA"
+
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_TLS_CERTDIR: ""
+
+services:
+  - docker:24.0-dind
+
+# ---------- BUILD ----------
+build_job:
+  stage: build
+  tags:
+    - gitops
+
+  before_script:
+    - apt-get update
+    - apt-get install -y docker.io git
+    - echo "$GCP_SA_KEY" | base64 -d > key.json
+    - gcloud auth activate-service-account --key-file=key.json
+    - gcloud config set project $PROJECT_ID
+    - gcloud auth configure-docker $REGISTRY
+
+  script:
+    - docker build -t $REGISTRY/$PROJECT_ID/$REPO/$IMAGE_NAME:$IMAGE_TAG .
+    - docker push $REGISTRY/$PROJECT_ID/$REPO/$IMAGE_NAME:$IMAGE_TAG
+
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+
+# ---------- GITOPS ----------
+gitops-update:
+  stage: gitops
+  tags:
+    - gitops
+
+  script:
+    - |
+      #git clone https://oauth2:$GITLAB_TOKEN1@gitlab.com/gitops/ai-attrition-k8s.git
+      git clone https://oauth2:$GITLAB_TOKEN1@gitlab.com/gitops3330217/ai-attrition-k8s.git
+      cd ai-attrition-k8s
+
+      sed -i "s|image:.*|image: $REGISTRY/$PROJECT_ID/$REPO/$IMAGE_NAME:$IMAGE_TAG|g" deployment.yaml
+
+      git config user.email "ci@gitlab.com"
+      git config user.name "gitlab-ci"
+
+      git add .
+      git commit -m "update image $IMAGE_TAG" || echo "No changes"
+      git push origin HEAD:main
+
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
