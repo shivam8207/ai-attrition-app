@@ -64,12 +64,16 @@ Fully automated Kubernetes deployment using ArgoCD.
 
 ## CI/CD Pipeline
 GitLab CI automatically builds and deploys Docker images.
+<img width="1718" height="689" alt="image" src="https://github.com/user-attachments/assets/d46da54c-d7c7-4623-b2df-82801a8434bc" />
+
 
 ## Kubernetes Deployment
 Runs on Google Kubernetes Engine (GKE).
 
 ## Auto Sync Deployment
 ArgoCD continuously syncs Git repository changes to Kubernetes cluster.
+<img width="1890" height="950" alt="image" src="https://github.com/user-attachments/assets/9f834829-8b4c-4350-8305-48551b2394b4" />
+
 
 ---
 
