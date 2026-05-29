@@ -63,7 +63,8 @@ Uses Google Cloud SQL MySQL securely with Kubernetes Secrets.
 Fully automated Kubernetes deployment using ArgoCD.
 
 ## CI/CD Pipeline
-<img width="1157" height="869" alt="image" src="https://github.com/user-attachments/assets/1c0a8b52-5d7f-48c1-a5ab-7c0d427fd0cf" />
+<img width="1075" height="794" alt="image" src="https://github.com/user-attachments/assets/eb4d62c0-44c1-4877-bda2-ba36c9c94997" />
+
 
 
 GitLab CI automatically builds and deploys Docker images.
